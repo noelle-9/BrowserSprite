@@ -23,5 +23,7 @@
       "js": ["js/sprite.js"]
     }
   ],
-  "permissions": []
+  "permissions": [
+    "storage" 
+  ]
 }
