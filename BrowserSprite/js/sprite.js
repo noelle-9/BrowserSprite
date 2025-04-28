@@ -248,13 +248,6 @@ console.log("Sprite script loaded!");
     sprite.style.left = left + 'px';
     sprite.style.top = top + 'px';
     
-    // Set walking animation direction
-    if (isMovingRight) {
-      setAction('walking-right');
-    } else {
-      setAction('walking-left');
-    }
-    
     // Reset idle timer
     startIdleTimer();
   }
