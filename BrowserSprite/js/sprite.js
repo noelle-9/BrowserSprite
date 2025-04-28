@@ -224,6 +224,7 @@
     // Keep sprite within window bounds
     left = Math.max(0, Math.min(window.innerWidth - 64, left));
     top = Math.max(0, Math.min(window.innerHeight - 64, top));
+<<<<<<< Updated upstream
     
     sprite.style.left = left + 'px';
     sprite.style.top = top + 'px';
@@ -235,6 +236,26 @@
       setAction('walking-left');
     }
     
+=======
+  
+    // Calculate distance
+    const rect = sprite.getBoundingClientRect();
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+    const distance = Math.sqrt(Math.pow(left - currentLeft, 2) + Math.pow(top - currentTop, 2));
+  
+    // Adjust transition duration based on distance (e.g., 0.01 seconds per pixel)
+    const duration = distance * 0.01; // Adjust multiplier as needed
+    sprite.style.transition = `left ${duration}s ease, top ${duration}s ease`;
+  
+    // Apply new position
+    sprite.style.left = left + 'px';
+    sprite.style.top = top + 'px';
+  
+    // Ensure bouncing animation is active
+    setAction('bouncing');
+  
+>>>>>>> Stashed changes
     // Reset idle timer
     startIdleTimer();
   }
