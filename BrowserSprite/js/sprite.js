@@ -1,3 +1,4 @@
+console.log("Sprite script loaded!");
 // Browser Sprite main content script
 (function() {
   // Configuration and state variables
@@ -63,13 +64,15 @@
   // Create the sprite element
   function createSprite() {
     if (sprite) return;
-    
+  
     sprite = document.createElement('div');
     sprite.className = 'browser-sprite draggable ' + settings.petType;
     sprite.style.left = Math.random() * (window.innerWidth - 100) + 'px';
     sprite.style.top = Math.random() * (window.innerHeight - 100) + 'px';
     updateSpriteAppearance();
     document.body.appendChild(sprite);
+  
+    console.log("Sprite created:", sprite);
   }
   
   // Update sprite appearance based on settings
@@ -83,32 +86,39 @@
   // Remove the sprite
   function removeSprite() {
     if (sprite) {
+      console.log("Removing sprite.");
       document.body.removeChild(sprite);
       sprite = null;
     }
-    
+  
     if (idleTimer) {
       clearTimeout(idleTimer);
       idleTimer = null;
     }
-    
+  
     if (movementTimer) {
       clearInterval(movementTimer);
       movementTimer = null;
     }
   }
   
-  // Set up event listeners
   function setupEventListeners() {
+    if (!sprite) {
+      console.warn("Sprite is null, cannot set up event listeners.");
+      return;
+    }
+  
     // Track cursor position
     document.addEventListener('mousemove', handleMouseMove);
-    
+  
     // Handle sprite dragging
     sprite.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
-    
+  
     // Handle sprite clicking for animations
     sprite.addEventListener('click', handleSpriteClick);
+  
+    console.log("Event listeners set up for sprite.");
   }
   
   // Handle mouse movement
@@ -119,9 +129,11 @@
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
       
+      console.log("Dragging sprite to:", left, top);
       sprite.style.left = left + 'px';
       sprite.style.top = top + 'px';
     } else if (settings.followCursor && currentAction === 'idle') {
+      console.log("Calling reactToCursor...");
       reactToCursor();
     }
   }
@@ -166,9 +178,15 @@
   
   // React to cursor position
   function reactToCursor() {
-    if (!sprite || isDragging || currentAction !== 'idle') return;
-    
+    if (!sprite) {
+      console.warn("Sprite is null, skipping reactToCursor.");
+      return;
+    }
+    if (isDragging || currentAction !== 'idle') return;
+  
+    console.log("Reacting to cursor...");
     const rect = sprite.getBoundingClientRect();
+    console.log("Sprite rect:", rect);
     const spriteCenter = {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
@@ -178,16 +196,18 @@
       Math.pow(lastCursorPosition.x - spriteCenter.x, 2) +
       Math.pow(lastCursorPosition.y - spriteCenter.y, 2)
     );
+
+    console.log("Cursor distance from sprite:", distance);
     
     // Only react if cursor is within reaction distance
     if (distance < 200) {
       const moveSpeed = 0.05 * (settings.speed / 100);
       
       if (distance < 50) {
-        // Too close, run away
+        console.log("Cursor too close, sprite running away.");
         moveAwayFromCursor(spriteCenter, moveSpeed);
       } else if (distance < 150) {
-        // Close enough, chase cursor
+        console.log("Cursor close enough, sprite chasing.");
         moveTowardsCursor(spriteCenter, moveSpeed);
       }
     }
@@ -220,21 +240,28 @@
   }
   
   // Move sprite to new position
-  function moveSprite(left, top, isMovingRight) {
+  function moveSprite(left, top) {
     // Keep sprite within window bounds
     left = Math.max(0, Math.min(window.innerWidth - 64, left));
     top = Math.max(0, Math.min(window.innerHeight - 64, top));
-    
+  
+    // Calculate distance
+    const rect = sprite.getBoundingClientRect();
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+    const distance = Math.sqrt(Math.pow(left - currentLeft, 2) + Math.pow(top - currentTop, 2));
+  
+    // Adjust transition duration based on distance (e.g., 0.01 seconds per pixel)
+    const duration = distance * 0.01; // Increased multiplier (was 0.005)
+    sprite.style.transition = `left ${duration}s ease, top ${duration}s ease`;
+  
+    // Apply new position
     sprite.style.left = left + 'px';
     sprite.style.top = top + 'px';
-    
-    // Set walking animation direction
-    if (isMovingRight) {
-      setAction('walking-right');
-    } else {
-      setAction('walking-left');
-    }
-    
+  
+    // Set bouncing animation
+    setAction('bouncing');
+  
     // Reset idle timer
     startIdleTimer();
   }
@@ -244,26 +271,27 @@
     if (movementTimer) {
       clearInterval(movementTimer);
     }
-    
+  
     movementTimer = setInterval(() => {
       if (isDragging || !settings.randomMovement) return;
-      
+  
       // Only move randomly if not already performing an action
-      if (currentAction === 'idle' || currentAction === 'sitting') {
+      if (currentAction === 'idle' || currentAction === 'bouncing') {
+        console.log("Moving sprite randomly...");
         const rect = sprite.getBoundingClientRect();
         const spriteCenter = {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2
         };
-        
+  
         // Random direction
         const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 100 + 50;
-        
+        const distance = Math.random() * 50 + 25; // Reduced distance (was 100 + 50)
+  
         const newLeft = parseFloat(sprite.style.left) + Math.cos(angle) * distance;
         const newTop = parseFloat(sprite.style.top) + Math.sin(angle) * distance;
-        
-        moveSprite(newLeft, newTop, Math.cos(angle) > 0);
+  
+        moveSprite(newLeft, newTop);
       }
     }, 5000); // Move every 5 seconds
   }
@@ -273,15 +301,11 @@
     if (idleTimer) {
       clearTimeout(idleTimer);
     }
-    
+  
     idleTimer = setTimeout(() => {
       if (!isDragging) {
-        // Randomly choose between idle and sitting
-        if (Math.random() > 0.5) {
-          setAction('idle');
-        } else {
-          setAction('sitting');
-        }
+        // Always default to bouncing
+        setAction('bouncing');
       }
     }, 2000); // Go idle after 2 seconds of inactivity
   }
@@ -289,21 +313,23 @@
   // Set sprite action/animation
   function setAction(action, duration = 0) {
     if (!sprite) return;
-    
+  
     // Remove all action classes
-    sprite.classList.remove('walking-right', 'walking-left', 'sitting', 'dancing', 'dead');
-    
+    sprite.classList.remove('walking-right', 'walking-left', 'sitting', 'dancing', 'dead', 'bouncing');
+  
     // Add new action class
     if (action !== 'idle') {
       sprite.classList.add(action);
+    } else {
+      sprite.classList.add('bouncing'); // Default to bouncing when idle
     }
-    
+  
     currentAction = action;
-    
-    // Reset to idle after duration if specified
+  
+    // Reset to bouncing after duration if specified
     if (duration > 0) {
       setTimeout(() => {
-        setAction('idle');
+        setAction('bouncing');
         startIdleTimer();
       }, duration);
     }
