@@ -5,11 +5,11 @@
   height: 64px;
   pointer-events: none;
   z-index: 9999;
-  transition: transform 0.2s;
+  transition: left 1s ease, top 1s ease; /* Smooth movement */
   background-repeat: no-repeat;
   background-size: contain;
 <<<<<<< Updated upstream
-  will-change: transform;
+  will-change: transform, left, top;
 =======
   will-change: transform, left, top;
   animation: bounce 1s infinite ease-in-out;
@@ -26,15 +26,15 @@
 }
 
 .browser-sprite.cat {
-  background-image: url('../images/cat-idle.png');
+  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/cat-idle.png');
 }
 
 .browser-sprite.dog {
-  background-image: url('../images/dog-idle.png');
+  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/dog-idle.png');
 }
 
 .browser-sprite.slime {
-  background-image: url('../images/slime-idle.png');
+  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/slime-idle.png');
 }
 
 .browser-sprite.walking-right {
@@ -61,6 +61,22 @@
 @keyframes walk-right {
   from { background-position: 0 0; }
   to { background-position: -256px 0; }
+/* @keyframes walk-right {
+  0% {
+    background-position: 0 0;
+  }
+  25% {
+    background-position: -64px 0;
+  }
+  50% {
+    background-position: -128px 0;
+  }
+  75% {
+    background-position: -192px 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
 
 @keyframes walk-left {
@@ -75,20 +91,62 @@
     transform: translateY(-20px); /* Adjust bounce height */
   }
 >>>>>>> Stashed changes
+  0% {
+    background-position: 0 0;
+  }
+  25% {
+    background-position: -64px 0;
+  }
+  50% {
+    background-position: -128px 0;
+  }
+  75% {
+    background-position: -192px 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+} */
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px); /* Adjust bounce height */
+  }
 }
 
 @keyframes sit {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(2px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(2px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes dance {
-  from { background-position: 0 0; }
-  to { background-position: -384px 0; }
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -384px 0;
+  }
 }
 
 @keyframes play-dead {
-  0% { transform: rotate(0); }
-  100% { transform: rotate(90deg); }
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(90deg);
+  }
 }
