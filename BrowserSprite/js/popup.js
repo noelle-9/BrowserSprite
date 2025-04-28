@@ -1,7 +1,6 @@
-console.log("Popup script loaded!");
+
 // Popup script for Browser Sprite settings
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("DOM fully loaded and parsed.");
   // Load saved settings
   chrome.storage.local.get({
     petType: 'cat',
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     randomMovement: true,
     enabled: true
   }, function(settings) {
-    console.log("Loaded settings:", settings);
     // Set pet type
     document.querySelector(`input[name="petType"][value="${settings.petType}"]`).checked = true;
     

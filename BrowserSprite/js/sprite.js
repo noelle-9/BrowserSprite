@@ -1,4 +1,3 @@
-console.log("Sprite script loaded!");
 // Browser Sprite main content script
 (function() {
   // Configuration and state variables
@@ -71,8 +70,6 @@ console.log("Sprite script loaded!");
     sprite.style.top = Math.random() * (window.innerHeight - 100) + 'px';
     updateSpriteAppearance();
     document.body.appendChild(sprite);
-  
-    console.log("Sprite created:", sprite);
   }
   
   // Update sprite appearance based on settings
@@ -86,7 +83,6 @@ console.log("Sprite script loaded!");
   // Remove the sprite
   function removeSprite() {
     if (sprite) {
-      console.log("Removing sprite.");
       document.body.removeChild(sprite);
       sprite = null;
     }
@@ -117,8 +113,6 @@ console.log("Sprite script loaded!");
   
     // Handle sprite clicking for animations
     sprite.addEventListener('click', handleSpriteClick);
-  
-    console.log("Event listeners set up for sprite.");
   }
   
   // Handle mouse movement
@@ -129,11 +123,9 @@ console.log("Sprite script loaded!");
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
       
-      console.log("Dragging sprite to:", left, top);
       sprite.style.left = left + 'px';
       sprite.style.top = top + 'px';
     } else if (settings.followCursor && currentAction === 'idle') {
-      console.log("Calling reactToCursor...");
       reactToCursor();
     }
   }
@@ -184,9 +176,7 @@ console.log("Sprite script loaded!");
     }
     if (isDragging || currentAction !== 'idle') return;
   
-    console.log("Reacting to cursor...");
     const rect = sprite.getBoundingClientRect();
-    console.log("Sprite rect:", rect);
     const spriteCenter = {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
@@ -196,18 +186,14 @@ console.log("Sprite script loaded!");
       Math.pow(lastCursorPosition.x - spriteCenter.x, 2) +
       Math.pow(lastCursorPosition.y - spriteCenter.y, 2)
     );
-
-    console.log("Cursor distance from sprite:", distance);
     
     // Only react if cursor is within reaction distance
     if (distance < 200) {
       const moveSpeed = 0.05 * (settings.speed / 100);
       
       if (distance < 50) {
-        console.log("Cursor too close, sprite running away.");
         moveAwayFromCursor(spriteCenter, moveSpeed);
       } else if (distance < 150) {
-        console.log("Cursor close enough, sprite chasing.");
         moveTowardsCursor(spriteCenter, moveSpeed);
       }
     }
@@ -244,10 +230,24 @@ console.log("Sprite script loaded!");
     // Keep sprite within window bounds
     left = Math.max(0, Math.min(window.innerWidth - 64, left));
     top = Math.max(0, Math.min(window.innerHeight - 64, top));
-    
+  
+    // Calculate distance
+    const rect = sprite.getBoundingClientRect();
+    const currentLeft = rect.left;
+    const currentTop = rect.top;
+    const distance = Math.sqrt(Math.pow(left - currentLeft, 2) + Math.pow(top - currentTop, 2));
+  
+    // Adjust transition duration based on distance (e.g., 0.02 seconds per pixel)
+    const duration = distance * 0.02; // Increased multiplier (was 0.01)
+    sprite.style.transition = `left ${duration}s ease, top ${duration}s ease`;
+  
+    // Apply new position
     sprite.style.left = left + 'px';
     sprite.style.top = top + 'px';
-    
+  
+    // Set bouncing animation
+    setAction('bouncing');
+  
     // Reset idle timer
     startIdleTimer();
   }
@@ -263,7 +263,6 @@ console.log("Sprite script loaded!");
   
       // Only move randomly if not already performing an action
       if (currentAction === 'idle' || currentAction === 'bouncing') {
-        console.log("Moving sprite randomly...");
         const rect = sprite.getBoundingClientRect();
         const spriteCenter = {
           x: rect.left + rect.width / 2,
@@ -272,7 +271,7 @@ console.log("Sprite script loaded!");
   
         // Random direction
         const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 50 + 25; // Reduced distance (was 100 + 50)
+        const distance = Math.random() * 100 + 50; // Reduced distance (was 100 + 50)
   
         const newLeft = parseFloat(sprite.style.left) + Math.cos(angle) * distance;
         const newTop = parseFloat(sprite.style.top) + Math.sin(angle) * distance;
