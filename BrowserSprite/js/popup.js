@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const petType = document.querySelector('input[name="petType"]:checked').value;
     const size = parseInt(document.getElementById('sizeSlider').value);
     const speed = parseInt(document.getElementById('speedSlider').value);
-    const randomMovement = document.getElementById('randomMovement').checked;
+    const behavior = document.querySelector('input[name="behavior"]:checked').value;
     const enabled = document.getElementById('enableSprite').checked;
   
     // Determine cursor behavior based on selected radio button
@@ -71,8 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
       size: size,
       speed: speed,
       followCursor: followCursor,
-      moveAwayFromCursor: moveAwayFromCursor,
-      randomMovement: randomMovement,
+      randomMovement: behavior === 'random',
+      followCursor: behavior === 'follow',
+      moveAwayFromCursor: behavior === 'moveAway',
       enabled: enabled
     });
   }

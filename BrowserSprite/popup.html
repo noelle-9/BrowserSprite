@@ -41,19 +41,16 @@
       <h2>Behavior</h2>
       <div class="radio-container">
         <label>
-          <input type="radio" name="cursorBehavior" id="followCursor" value="follow" checked>
+          <input type="radio" name="behavior" id="randomMovement" value="random" checked>
+          <span>Freedom</span>
+        </label>
+        <label>
+          <input type="radio" name="behavior" id="followCursor" value="follow">
           <span>Follow Cursor</span>
         </label>
         <label>
-          <input type="radio" name="cursorBehavior" id="moveAwayFromCursor" value="moveAway">
-          <span>Move Away From Cursor</span>
-        </label>
-      </div>
-      <div class="toggle-container">
-        <label class="toggle">
-          <input type="checkbox" id="randomMovement" checked>
-          <span class="toggle-slider"></span>
-          <span class="toggle-label">Random Movement</span>
+          <input type="radio" name="behavior" id="moveAwayFromCursor" value="moveAway">
+          <span>Avoid Cursor</span>
         </label>
       </div>
     </div>
