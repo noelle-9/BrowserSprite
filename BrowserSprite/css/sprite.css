@@ -21,16 +21,13 @@
   cursor: grabbing;
 }
 
-/* .browser-sprite.cat {
-  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/cat-idle.png');
-}
-
-.browser-sprite.dog {
-  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/dog-idle.png');
-} */
 
 .browser-sprite.pinkSlime {
   background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/pinkSlime.gif');
+}
+
+.browser-sprite.purpleSlime {
+  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/purpleSlime.gif');
 }
 
 .browser-sprite.greenSlime {

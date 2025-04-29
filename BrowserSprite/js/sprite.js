@@ -5,7 +5,7 @@
     petType: 'cat',
     size: 100,
     speed: 100,
-    followCursor: true,
+    followCursor: false,
     moveAwayFromCursor: false,
     randomMovement: true,
     enabled: true,
@@ -18,13 +18,16 @@
   let currentAction = 'idle';
   let idleTimer = null;
   let movementTimer = null;
+  let movementInProgress = false;
+  let lastReactTime = 0;
 
   // Initialize the sprite
   function initSprite() {
-    // Load settings
     chrome.storage.local.get(settings, function (items) {
-      settings = items;
-
+      // Merge default settings with retrieved settings
+      settings = { ...settings, ...items };
+      console.log("randomMovement set to:", settings.randomMovement); // Debug log
+  
       if (settings.enabled) {
         createSprite();
         setupEventListeners();
@@ -40,34 +43,65 @@
   chrome.storage.onChanged.addListener(function (changes) {
     for (let key in changes) {
       settings[key] = changes[key].newValue;
+  
+      // Log specific changes for debugging
+      console.log(`${key} updated to:`, settings[key]);
+  
+      // Handle specific settings updates
+      if (key === 'randomMovement') {
+        console.log("randomMovement updated to:", settings.randomMovement); // Debug log
+  
+        // Start or stop random movement based on the updated value
+        if (settings.randomMovement) {
+          if (!movementTimer) {
+            startRandomMovement();
+          }
+        } else {
+          if (movementTimer) {
+            clearInterval(movementTimer);
+            movementTimer = null;
+            console.log("Random movement stopped."); // Debug log
+          }
+        }
+      }
+  
+      if (key === 'moveAwayFromCursor' || key === 'followCursor') {
+        console.log("Cursor behavior updated. Reacting to cursor."); // Debug log
+  
+        // Stop random movement if cursor interaction is enabled
+        if (movementTimer) {
+          clearInterval(movementTimer);
+          movementTimer = null;
+          console.log("Random movement stopped due to cursor interaction."); // Debug log
+        }
+  
+        reactToCursor(); // Ensure the sprite reacts to the cursor
+      }
+  
+      if (key === 'petType') {
+        console.log("Pet type updated to:", settings.petType); // Debug log
+        updateSpriteAppearance(); // Update sprite appearance dynamically
+      }
+  
+      if (key === 'enabled') {
+        console.log("Sprite enabled state updated to:", settings.enabled); // Debug log
+        if (!settings.enabled) {
+          removeSprite();
+        } else if (settings.enabled && !sprite) {
+          createSprite();
+          setupEventListeners();
+        }
+      }
     }
-
-    console.log("Settings updated:", settings); // Debug log
-
+  
+    console.log("Settings updated via storage change:", settings); // Debug log
+  
+    // Handle sprite updates dynamically
     if (sprite) {
-      // Update sprite appearance and behavior dynamically
       updateSpriteAppearance();
-
-      if (!settings.enabled) {
-        console.log("Removing sprite because settings.enabled is false."); // Debug log
-        removeSprite();
-      } else if (settings.enabled && !sprite) {
-        console.log("Creating sprite because settings.enabled is true."); // Debug log
-        createSprite();
-        setupEventListeners();
-      }
-
-      // Handle random movement
-      if (settings.randomMovement && !movementTimer) {
-        startRandomMovement();
-      } else if (!settings.randomMovement && movementTimer) {
-        clearInterval(movementTimer);
-        movementTimer = null;
-      }
-
-      // Handle cursor behavior
+  
+      // React to cursor behavior changes
       if (settings.followCursor || settings.moveAwayFromCursor) {
-        // React to cursor dynamically
         reactToCursor();
       }
     }
@@ -90,7 +124,7 @@
     if (!sprite) return;
 
     // Replace the current pet type class with the new one
-    sprite.className = sprite.className.replace(/pinkSlime|greenSlime/, settings.petType);
+    sprite.className = sprite.className.replace(/pinkSlime|greenSlime|purpleSlime/, settings.petType);
     console.log("Updated sprite class:", sprite.className); // Debug log
 
     // Update sprite size
@@ -154,33 +188,33 @@
   // Handle mouse down on sprite (start dragging)
   function handleMouseDown(e) {
     e.preventDefault();
-  
+
     isDragging = true;
     sprite.classList.add('dragging');
-  
+
     const rect = sprite.getBoundingClientRect();
     dragOffset = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     };
-  
+
     // Stop random movement while dragging
     if (movementTimer) {
       clearInterval(movementTimer);
       movementTimer = null;
     }
-  
+
     // Stop any current animations
     setAction('idle');
   }
-  
+
   function handleMouseMove(e) {
     lastCursorPosition = { x: e.clientX, y: e.clientY };
-  
+
     if (isDragging) {
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
-  
+
       sprite.style.left = left + 'px';
       sprite.style.top = top + 'px';
     } else {
@@ -189,32 +223,39 @@
     }
   }
 
-function handleMouseUp() {
-  if (isDragging) {
-    isDragging = false;
-    sprite.classList.remove('dragging');
+  function handleMouseUp() {
+    if (isDragging) {
+      isDragging = false;
+      sprite.classList.remove('dragging');
 
-    // Resume random movement after a short delay
-    if (settings.randomMovement) {
-      setTimeout(() => {
-        if (!isDragging) { // Ensure dragging hasn't restarted
-          startRandomMovement();
-        }
-      }, 500); // 500ms delay before restarting random movement
+      // Resume random movement after a short delay
+      if (settings.randomMovement) {
+        setTimeout(() => {
+          if (!isDragging) { // Ensure dragging hasn't restarted
+            startRandomMovement();
+          }
+        }, 500); // 500ms delay before restarting random movement
+      }
+
+      startIdleTimer();
     }
-
-    startIdleTimer();
   }
-}
 
   // Handle clicking on the sprite
   function handleSpriteClick(e) {
     e.stopPropagation();
-      setAction('dead', 2000);
+    setAction('dead', 2000);
   }
 
   // React to cursor position
   function reactToCursor() {
+    const now = performance.now();
+    if (now - lastReactTime < 100) { // Throttle to 100ms
+      requestAnimationFrame(reactToCursor);
+      return;
+    }
+    lastReactTime = now;
+  
     if (!sprite) {
       console.warn("Sprite is null, skipping reactToCursor.");
       return;
@@ -234,20 +275,21 @@ function handleMouseUp() {
     const moveSpeed = 0.1 * (settings.speed / 100); // Adjust speed multiplier
   
     if (settings.moveAwayFromCursor) {
-      // If the cursor is far, trigger random movement
-      if (distance > 200) { // Cursor is far
-        if (!movementTimer) {
-          startRandomMovement();
-        }
-      } else if (distance < 100) { // Cursor is close
-        clearInterval(movementTimer); // Stop random movement
-        movementTimer = null;
+      if (distance < 100 && !movementInProgress) { // Cursor is close and sprite is idle
         moveAwayFromCursor(spriteCenter, moveSpeed);
+      } else if (distance > 200 && !movementTimer) { // Cursor is far and random movement is not running
+        console.log("Cursor is far, starting random movement."); // Debug log
+        startRandomMovement();
       }
     } else if (settings.followCursor) {
-      // Follow the cursor if the setting is enabled
-      if (distance > 50) { // Adjusted threshold for following
+      if (distance > 50 && !movementInProgress) { // Cursor is far and sprite is idle
         moveTowardsCursor(spriteCenter, moveSpeed);
+      }
+    } else {
+      // If neither followCursor nor moveAwayFromCursor is enabled, start random movement
+      if (!movementTimer) {
+        console.log("No cursor interaction, starting random movement."); // Debug log
+        startRandomMovement();
       }
     }
   
@@ -257,12 +299,19 @@ function handleMouseUp() {
 
   // Move sprite away from cursor
   function moveAwayFromCursor(spriteCenter, speed) {
+    if (movementInProgress) {
+      console.log("Movement in progress, skipping moveAwayFromCursor."); // Debug log
+      return;
+    }
+  
+    movementInProgress = true;
+  
     const angle = Math.atan2(
       spriteCenter.y - lastCursorPosition.y, // Reverse direction (away from cursor)
       spriteCenter.x - lastCursorPosition.x
     );
   
-    const distance = Math.random() * 50 + 25; // Randomize the distance like random movement
+    const distance = Math.random() * 150 + 50; // Randomize the distance like random movement
   
     const newLeft = Math.max(
       0,
@@ -273,17 +322,24 @@ function handleMouseUp() {
       Math.min(window.innerHeight - 64, spriteCenter.y + Math.sin(angle) * distance)
     );
   
-    moveSprite(newLeft, newTop);
+    console.log("Moving away from cursor to:", { newLeft, newTop }); // Debug log
+    moveSprite(newLeft, newTop, () => {
+      movementInProgress = false; // Reset the flag after movement completes
+    });
   }
 
   // Move sprite towards cursor
   function moveTowardsCursor(spriteCenter, speed) {
+    if (movementInProgress) return;
+  
+    movementInProgress = true;
+  
     const angle = Math.atan2(
       lastCursorPosition.y - spriteCenter.y, // Direction toward the cursor
       lastCursorPosition.x - spriteCenter.x
     );
   
-    const distance = Math.random() * 50 + 25; // Randomize the distance like random movement
+    const distance = Math.random() * 150 + 50; // Randomize the distance like random movement
   
     const newLeft = Math.max(
       0,
@@ -294,11 +350,15 @@ function handleMouseUp() {
       Math.min(window.innerHeight - 64, spriteCenter.y + Math.sin(angle) * distance)
     );
   
-    moveSprite(newLeft, newTop);
+    moveSprite(newLeft, newTop, () => {
+      movementInProgress = false; // Reset the flag after movement completes
+    });
   }
 
   // Move sprite to new position
-  function moveSprite(targetLeft, targetTop) {
+  function moveSprite(targetLeft, targetTop, callback) {
+    console.log("moveSprite called with:", { targetLeft, targetTop }); // Debug log
+  
     // Keep sprite within window bounds
     targetLeft = Math.max(0, Math.min(window.innerWidth - 64, targetLeft));
     targetTop = Math.max(0, Math.min(window.innerHeight - 64, targetTop));
@@ -319,6 +379,9 @@ function handleMouseUp() {
         // If close enough to the target, snap to the target position
         sprite.style.left = targetLeft + 'px';
         sprite.style.top = targetTop + 'px';
+  
+        movementInProgress = false; // Reset the flag
+        if (callback) callback(); // Execute the callback after movement completes
       } else {
         // Move a step closer to the target
         const angle = Math.atan2(deltaY, deltaX);
@@ -339,6 +402,8 @@ function handleMouseUp() {
 
   // Start random movement
   function startRandomMovement() {
+    console.log("randomMovement set to:", settings.randomMovement); // Debug log
+
     if (movementTimer) {
       clearInterval(movementTimer);
     }
@@ -346,10 +411,18 @@ function handleMouseUp() {
     console.log("Starting random movement..."); // Debug log
   
     movementTimer = setInterval(() => {
-      if (isDragging || !settings.randomMovement) return; // Skip random movement if dragging
+      console.log("Random movement check:", {
+        isDragging,
+        randomMovement: settings.randomMovement,
+      }); // Debug log
+  
+      if (isDragging || !settings.randomMovement) {
+        console.log("Skipping random movement because sprite is being dragged or random movement is disabled."); // Debug log
+        return; // Skip random movement if dragging or disabled
+      }
   
       // Only move randomly if not already performing an action
-      if (currentAction === 'idle' || currentAction === 'bouncing') {
+      if (!movementInProgress && (currentAction === 'idle' || currentAction === 'bouncing')) {
         const rect = sprite.getBoundingClientRect();
         const spriteCenter = {
           x: rect.left + rect.width / 2,
@@ -369,10 +442,18 @@ function handleMouseUp() {
           Math.min(window.innerHeight - 64, spriteCenter.y + Math.sin(angle) * distance)
         );
   
-        moveSprite(newLeft, newTop);
+        console.log("Random movement to:", { newLeft, newTop }); // Debug log
+        movementInProgress = true; // Set the flag to prevent overlapping movements
+        moveSprite(newLeft, newTop, () => {
+          console.log("Random movement completed."); // Debug log
+          movementInProgress = false; // Reset the flag after movement completes
+        });
+      } else {
+        console.log("Skipping random movement because movement is already in progress or sprite is not idle."); // Debug log
       }
-    }, 4000); // Move every 2 seconds
+    }, 4000); // Move every 4 seconds
   }
+
   // Start idle timer
   function startIdleTimer() {
     if (idleTimer) {
