@@ -36,7 +36,7 @@ h2 {
 /* Pet Selection */
 .pet-selection {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .pet-selection label {

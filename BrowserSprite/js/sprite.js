@@ -6,6 +6,7 @@
     size: 100,
     speed: 100,
     followCursor: true,
+    moveAwayFromCursor: false,
     randomMovement: true,
     enabled: true
   };
@@ -35,26 +36,38 @@
     });
     
     // Listen for settings changes
-    chrome.storage.onChanged.addListener(function(changes) {
+    chrome.storage.onChanged.addListener(function (changes) {
       for (let key in changes) {
         settings[key] = changes[key].newValue;
       }
-      
+    
+      console.log("Settings updated:", settings); // Debug log
+    
       if (sprite) {
+        // Update sprite appearance and behavior dynamically
         updateSpriteAppearance();
-        
+    
         if (!settings.enabled) {
+          console.log("Removing sprite because settings.enabled is false."); // Debug log
           removeSprite();
         } else if (settings.enabled && !sprite) {
+          console.log("Creating sprite because settings.enabled is true."); // Debug log
           createSprite();
           setupEventListeners();
         }
-        
+    
+        // Handle random movement
         if (settings.randomMovement && !movementTimer) {
           startRandomMovement();
         } else if (!settings.randomMovement && movementTimer) {
           clearInterval(movementTimer);
           movementTimer = null;
+        }
+    
+        // Handle cursor behavior
+        if (settings.followCursor || settings.moveAwayFromCursor) {
+          // React to cursor dynamically
+          reactToCursor();
         }
       }
     });
@@ -75,24 +88,31 @@
   // Update sprite appearance based on settings
   function updateSpriteAppearance() {
     if (!sprite) return;
-    
-    sprite.className = sprite.className.replace(/cat|dog|slime/, settings.petType);
+  
+    // Replace the current pet type class with the new one
+    sprite.className = sprite.className.replace(/pinkSlime|greenSlime/, settings.petType);
+    console.log("Updated sprite class:", sprite.className); // Debug log
+  
+    // Update sprite size
     sprite.style.transform = `scale(${settings.size / 100})`;
   }
   
   // Remove the sprite
   function removeSprite() {
     if (sprite) {
+      console.log("Removing sprite element from DOM."); // Debug log
       document.body.removeChild(sprite);
       sprite = null;
     }
   
     if (idleTimer) {
+      console.log("Clearing idle timer."); // Debug log
       clearTimeout(idleTimer);
       idleTimer = null;
     }
   
     if (movementTimer) {
+      console.log("Clearing movement timer."); // Debug log
       clearInterval(movementTimer);
       movementTimer = null;
     }
@@ -118,14 +138,15 @@
   // Handle mouse movement
   function handleMouseMove(e) {
     lastCursorPosition = { x: e.clientX, y: e.clientY };
-    
+  
     if (isDragging) {
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
-      
+  
       sprite.style.left = left + 'px';
       sprite.style.top = top + 'px';
-    } else if (settings.followCursor && currentAction === 'idle') {
+    } else {
+      // Always call reactToCursor to follow the cursor
       reactToCursor();
     }
   }
@@ -174,42 +195,47 @@
       console.warn("Sprite is null, skipping reactToCursor.");
       return;
     }
-    if (isDragging || currentAction !== 'idle') return;
   
     const rect = sprite.getBoundingClientRect();
     const spriteCenter = {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
     };
-    
+  
     const distance = Math.sqrt(
       Math.pow(lastCursorPosition.x - spriteCenter.x, 2) +
       Math.pow(lastCursorPosition.y - spriteCenter.y, 2)
     );
-    
-    // Only react if cursor is within reaction distance
-    if (distance < 200) {
-      const moveSpeed = 0.05 * (settings.speed / 100);
-      
-      if (distance < 50) {
+  
+    const moveSpeed = 0.1 * (settings.speed / 100); // Adjust speed multiplier
+  
+    if (settings.moveAwayFromCursor) {
+      // Move away from the cursor if the setting is enabled
+      if (distance < 20) { // Adjust the threshold as needed
         moveAwayFromCursor(spriteCenter, moveSpeed);
-      } else if (distance < 150) {
+      }
+    } else if (settings.followCursor) {
+      // Follow the cursor if the setting is enabled
+      if (distance > 20) { // Lowered threshold to ensure continuous movement
         moveTowardsCursor(spriteCenter, moveSpeed);
       }
     }
-  }
   
+    // Continuously call reactToCursor for smooth movement
+    requestAnimationFrame(reactToCursor);
+  }
+
   // Move sprite away from cursor
   function moveAwayFromCursor(spriteCenter, speed) {
     const angle = Math.atan2(
       lastCursorPosition.y - spriteCenter.y,
       lastCursorPosition.x - spriteCenter.x
     );
-    
-    const newLeft = parseFloat(sprite.style.left) - Math.cos(angle) * speed * 5;
-    const newTop = parseFloat(sprite.style.top) - Math.sin(angle) * speed * 5;
-    
-    moveSprite(newLeft, newTop, lastCursorPosition.x < spriteCenter.x);
+  
+    const newLeft = parseFloat(sprite.style.left) - Math.cos(angle) * speed * 15;
+    const newTop = parseFloat(sprite.style.top) - Math.sin(angle) * speed * 15;
+  
+    moveSprite(newLeft, newTop);
   }
   
   // Move sprite towards cursor
@@ -218,32 +244,31 @@
       lastCursorPosition.y - spriteCenter.y,
       lastCursorPosition.x - spriteCenter.x
     );
-    
-    const newLeft = parseFloat(sprite.style.left) + Math.cos(angle) * speed * 3;
-    const newTop = parseFloat(sprite.style.top) + Math.sin(angle) * speed * 3;
-    
-    moveSprite(newLeft, newTop, lastCursorPosition.x > spriteCenter.x);
+  
+    const newLeft = parseFloat(sprite.style.left) + Math.cos(angle) * speed * 15;
+    const newTop = parseFloat(sprite.style.top) + Math.sin(angle) * speed * 15;
+  
+    moveSprite(newLeft, newTop);
   }
   
   // Move sprite to new position
-  function moveSprite(left, top) {
+  function moveSprite(targetLeft, targetTop) {
     // Keep sprite within window bounds
-    left = Math.max(0, Math.min(window.innerWidth - 64, left));
-    top = Math.max(0, Math.min(window.innerHeight - 64, top));
+    targetLeft = Math.max(0, Math.min(window.innerWidth - 64, targetLeft));
+    targetTop = Math.max(0, Math.min(window.innerHeight - 64, targetTop));
   
-    // Calculate distance
-    const rect = sprite.getBoundingClientRect();
-    const currentLeft = rect.left;
-    const currentTop = rect.top;
-    const distance = Math.sqrt(Math.pow(left - currentLeft, 2) + Math.pow(top - currentTop, 2));
+    const currentLeft = parseFloat(sprite.style.left) || 0;
+    const currentTop = parseFloat(sprite.style.top) || 0;
   
-    // Adjust transition duration based on distance (e.g., 0.02 seconds per pixel)
-    const duration = distance * 0.02; // Increased multiplier (was 0.01)
-    sprite.style.transition = `left ${duration}s ease, top ${duration}s ease`;
+    // Lerp factor (adjust for smoother movement)
+    const lerpFactor = 0.02;
+  
+    const newLeft = currentLeft + (targetLeft - currentLeft) * lerpFactor;
+    const newTop = currentTop + (targetTop - currentTop) * lerpFactor;
   
     // Apply new position
-    sprite.style.left = left + 'px';
-    sprite.style.top = top + 'px';
+    sprite.style.left = newLeft + 'px';
+    sprite.style.top = newTop + 'px';
   
     // Set bouncing animation
     setAction('bouncing');
