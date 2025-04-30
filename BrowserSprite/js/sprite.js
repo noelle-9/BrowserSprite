@@ -302,8 +302,8 @@
 
   // Move sprite away from cursor
   function moveAwayFromCursor(spriteCenter, speed) {
-    if (movementInProgress) {
-      return;
+    if (movementInProgress || currentAction === 'dead' || currentAction === 'dance') {
+      return; 
     }
 
     movementInProgress = true;
@@ -331,7 +331,9 @@
 
   // Move sprite towards cursor
   function moveTowardsCursor(spriteCenter, speed) {
-    if (movementInProgress) return;
+    if (movementInProgress || currentAction === 'dead' || currentAction === 'dance') {
+      return; 
+    }
 
     movementInProgress = true;
 
@@ -409,8 +411,13 @@
 
     movementTimer = setInterval(() => {
 
-      if (isDragging || !settings.randomMovement) {
-        return; // Skip random movement if dragging or disabled
+      if (
+        isDragging || 
+        !settings.randomMovement || 
+        currentAction === 'dead' || 
+        currentAction === 'dance'
+      ) {
+        return;
       }
 
       // Only move randomly if not already performing an action
