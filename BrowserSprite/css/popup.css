@@ -1,36 +1,45 @@
 /* Popup Styles */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: monospace;
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: #ffe8e3;
+  color: #5c3a25;
+  font-size: 14px;
 }
 
 .container {
   width: 300px;
-  padding: 15px;
+  /* padding: 15px; */
 }
 
 h1 {
   text-align: center;
-  margin-top: 0;
-  color: #4285f4;
+  margin: 0;
+  color: #ffe8e3;
+  background-color: #5c3a25;
   font-size: 24px;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 1px;
 }
 
 h2 {
-  font-size: 16px;
-  margin-bottom: 10px;
-  color: #555;
+  font-size: 17px;
+  margin: 0 0 0.5rem 0;
+  color: #5c3a25;
 }
 
 .section {
-  background-color: white;
+  /* background-color: #ffeedc; */
+  background-color: #fff6f2;
   border-radius: 8px;
+  border: 1.5px solid #5c3a25;
   padding: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 15px;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); */
 }
 
 /* Pet Selection */
@@ -41,16 +50,12 @@ h2 {
 
 .pet-selection label {
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-}
-
-.pet-selection label:hover {
-  background-color: #f0f0f0;
+  text-align: center;
+  gap: 4px;
+  padding: 0 1rem 0 1rem;
 }
 
 /* Sliders */
@@ -69,19 +74,20 @@ h2 {
   margin: 0 10px;
 }
 
-/* Checkboxes */
-.checkbox-container {
-  margin-bottom: 8px;
-}
-
-.checkbox-container label {
+.radio-container {
   display: flex;
-  align-items: center;
-  cursor: pointer;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
-.checkbox-container input[type="checkbox"] {
-  margin-right: 8px;
+.radio-container label {
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 0 1rem 0 1rem;
 }
 
 /* Toggle Switch */
@@ -107,7 +113,7 @@ h2 {
   display: inline-block;
   width: 50px;
   height: 24px;
-  background-color: #ccc;
+  background-color: #ffff;
   border-radius: 24px;
   transition: .4s;
   margin-right: 10px;
@@ -127,7 +133,7 @@ h2 {
 }
 
 .toggle input:checked + .toggle-slider {
-  background-color: #4285f4;
+  background-color: #5c3a25;
 }
 
 .toggle input:checked + .toggle-slider:before {
@@ -143,6 +149,12 @@ h2 {
 .footer {
   text-align: center;
   font-size: 11px;
-  color: #999;
-  margin-top: 15px;
+  background-color: #5c3a25;
+  color: #ffe8e3;
+  margin: 0;
+  padding: 2px;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
