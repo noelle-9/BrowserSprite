@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Browser Sprite Settings</title>
   <link rel="stylesheet" href="css/popup.css">
 </head>
+
 <body>
   <div class="container">
     <h1>Browser Sprite</h1>
-    
+
     <div class="section">
       <h2>Pet Type</h2>
       <div class="pet-selection">
@@ -25,7 +27,7 @@
         </label>
       </div>
     </div>
-    
+
     <div class="section">
       <h2>Customization</h2>
       <div class="slider-container">
@@ -33,32 +35,29 @@
         <input type="range" id="sizeSlider" min="50" max="150" value="100">
         <span id="sizeValue">100%</span>
       </div>
-      
+
       <div class="slider-container">
         <label for="speedSlider">Speed:</label>
         <input type="range" id="speedSlider" min="50" max="150" value="100">
         <span id="speedValue">100%</span>
       </div>
     </div>
-    
+
     <div class="section">
       <h2>Behavior</h2>
       <div class="radio-container">
-        <label>
-          <input type="radio" name="behavior" id="randomMovement" value="random" checked>
-          <span>Freedom</span>
-        </label>
-        <label>
-          <input type="radio" name="behavior" id="followCursor" value="follow">
-          <span>Follow Cursor</span>
-        </label>
-        <label>
-          <input type="radio" name="behavior" id="moveAwayFromCursor" value="moveAway">
-          <span>Avoid Cursor</span>
-        </label>
+        <input type="radio" id="randomRadio" name="behavior" value="random">
+        <label for="randomRadio">Free Will</label>
+
+        <input type="radio" id="followRadio" name="behavior" value="follow">
+        <label for="followRadio">Follow Cursor</label>
+
+        <input type="radio" id="moveAwayRadio" name="behavior" value="moveAway">
+        <label for="moveAwayRadio">Move Away</label>
+
       </div>
     </div>
-    
+
     <div class="section toggle-section">
       <label class="toggle">
         <input type="checkbox" id="enableSprite" checked>
@@ -66,12 +65,13 @@
         <span class="toggle-label">Enable Sprite</span>
       </label>
     </div>
-    
+
     <div class="footer">
       <p>Browser Sprite - No data collection, runs locally</p>
     </div>
   </div>
-  
+
   <script src="js/popup.js"></script>
 </body>
+
 </html>
