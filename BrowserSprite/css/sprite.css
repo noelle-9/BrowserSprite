@@ -1,7 +1,7 @@
 /* Sprite Styles */
 .browser-sprite {
   position: fixed;
-  width: 64px;
+  width: 85px;
   height: 64px;
   pointer-events: none;
   z-index: 9999;
@@ -46,14 +46,9 @@
   animation: sit 2s infinite;
 }
 
-.browser-sprite.dancing {
+.browser-sprite.dance {
   animation: dance 1s steps(6) infinite;
 }
-
-.browser-sprite.dead {
-  animation: play-dead 0.5s forwards;
-}
-
 
 @keyframes bounce {
   0%, 20%, 100% {
@@ -79,21 +74,23 @@
 }
 
 @keyframes dance {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: -384px 0;
-  }
-}
-
-@keyframes play-dead {
   0% {
-    transform: rotate(0);
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-30deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
+
+  75% {
+    transform: rotate(30deg);
   }
 
   100% {
-    transform: rotate(90deg);
+    transform: rotate(0deg);
   }
 }

@@ -124,10 +124,19 @@
   // Update sprite appearance based on settings
   function updateSpriteAppearance() {
     if (!sprite) return; // Ensure the function exits if the sprite is null or undefined
-
-    // Replace the current pet type class with the new one
-    sprite.className = sprite.className.replace(/pinkSlime|greenSlime|purpleSlime/, settings.petType);
-
+  
+    // Extract the current sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
+    const currentSpriteType = sprite.className.match(/pinkSlime|greenSlime|purpleSlime/);
+  
+    // Replace the current sprite type class with the new one
+    if (currentSpriteType) {
+      sprite.classList.remove(currentSpriteType[0]);
+    }
+    sprite.classList.add(settings.petType);
+  
+    // Update the background image to match the new sprite type
+    sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${settings.petType}.gif')`;
+  
     // Update sprite size
     sprite.style.transform = `scale(${settings.size / 100})`;
   }
@@ -225,9 +234,22 @@
   }
 
   // Handle clicking on the sprite
+  // function handleSpriteClick(e) {
+  //   e.stopPropagation();
+  //   setAction('dead', 2000);
+  // }
+
   function handleSpriteClick(e) {
     e.stopPropagation();
-    setAction('dead', 2000);
+  
+    // Define possible actions
+    const actions = ['dead', 'dance'];
+  
+    // Randomly select an action
+    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+  
+    // Set the randomly selected action with a duration of 2 seconds
+    setAction(randomAction, 1800);
   }
 
   // React to cursor position
@@ -438,30 +460,35 @@
   // Set sprite action/animation
   function setAction(action, duration = 0) {
     if (!sprite) return;
-
-    // Remove all action classes
-    sprite.classList.remove(
-      'walking-right',
-      'walking-left',
-      'sitting',
-      'dancing',
-      'dead',
-      'bouncing'
-    );
-
-    // Add new action class
+  
+    // Extract the base sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
+    const spriteType = sprite.className.match(/pinkSlime|greenSlime|purpleSlime/);
+    if (!spriteType) return; // Exit if no sprite type is found
+  
+    // Remove all action classes while preserving the base sprite type
+    sprite.className = `browser-sprite draggable ${spriteType[0]}`;
+  
+    // Add the new action class
     if (action !== 'idle') {
       sprite.classList.add(action);
+  
+      // Handle the "dead" action specifically
+      if (action === 'dead') {
+        sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${spriteType[0]}Dead.gif')`;
+      }
     } else {
       sprite.classList.add('bouncing'); // Default to bouncing when idle
     }
-
+  
     currentAction = action;
-
-    // Reset to bouncing after duration if specified
+  
+    // Reset to the regular .gif after the duration if specified
     if (duration > 0) {
       setTimeout(() => {
-        setAction('bouncing');
+        if (action === 'dead') {
+          sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${spriteType[0]}.gif')`;
+        }
+        setAction('bouncing'); // Reset to bouncing after the "dead" action
         startIdleTimer();
       }, duration);
     }
