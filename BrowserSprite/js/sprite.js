@@ -318,7 +318,7 @@
       lastCursorPosition.x - spriteCenter.x
     );
 
-    const distance = Math.random() * 150 + 50; // Randomize the distance like random movement
+    const distance = Math.random() * 150 + 50; 
 
     const newLeft = Math.max(
       0,
@@ -351,7 +351,7 @@
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
       // Define the animation speed (pixels per frame)
-      const animationSpeed = 5;
+      const animationSpeed = 10;
 
       if (distance < animationSpeed) {
         // If close enough to the target, snap to the target position
