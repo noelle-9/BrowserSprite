@@ -1,7 +1,7 @@
 # Browser Sprite Chrome Extension - Documentation
 
 ## Overview
-BrowserSprite is a Chrome extension that adds a virtual sprite to your browser window. The sprite interacts with your cursor, performs fun animations, and can be fully customized to suit your preferences. It is lightweight, privacy-focused, and runs entirely locally without any data collection.
+BrowserSprite adds a virtual sprite to your browser window. The sprite interacts with your cursor, performs fun animations, and its behaviour can be customized to suit your preferences. It is lightweight, privacy-focused, and runs entirely locally without any data collection.
 
 ## Features
 - **Virtual sprite Options**: Choose between a pink, purple, or green sprite
