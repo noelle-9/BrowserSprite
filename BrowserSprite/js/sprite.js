@@ -124,6 +124,7 @@
   // Update sprite appearance based on settings
   function updateSpriteAppearance() {
     if (!sprite) return; // Ensure the function exits if the sprite is null or undefined
+<<<<<<< Updated upstream
   <<<<<<< Updated upstream
 
     // Extract the current sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
@@ -137,6 +138,12 @@
   
     // Update the background image to match the new sprite type
     sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${settings.petType}.gif')`;
+=======
+  
+    // Dynamically set the background image based on the pet type
+    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
+    sprite.style.backgroundImage = `url('${spriteUrl}')`;
+>>>>>>> Stashed changes
   
 =======
   
@@ -423,7 +430,10 @@
 
     movementTimer = setInterval(() => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
       if (
         isDragging || 
         !settings.randomMovement || 
@@ -489,6 +499,7 @@
   // Set sprite action/animation
   function setAction(action, duration = 0) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     if (!sprite) return;
   
     // Extract the base sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
@@ -513,6 +524,12 @@
       return; // Exit if the sprite is toggled off or not initialized
     }
   
+=======
+    if (!settings.enabled || !sprite) {
+      return; // Exit if the sprite is toggled off or not initialized
+    }
+  
+>>>>>>> Stashed changes
     // Dynamically set the background image for specific actions
     if (action === 'dead') {
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}Dead.gif`);
@@ -524,6 +541,9 @@
     } else if (action === 'idle') {
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
       sprite.style.backgroundImage = `url('${spriteUrl}')`;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
   
@@ -533,14 +553,20 @@
     if (duration > 0) {
       setTimeout(() => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         setAction('bouncing');
 =======
+=======
+>>>>>>> Stashed changes
         if (action === 'dead' || action === 'dance') {
           const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
           sprite.style.backgroundImage = `url('${spriteUrl}')`;
           sprite.classList.remove('dance'); // Remove the "dance" class after the duration
         }
         setAction('bouncing'); // Reset to bouncing after the action
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         startIdleTimer();
       }, duration);

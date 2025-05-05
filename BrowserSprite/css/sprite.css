@@ -64,7 +64,11 @@
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 @keyframes dance {
+=======
+/* @keyframes dance {
+>>>>>>> Stashed changes
   0% {
     transform: rotate(0deg);
   }
