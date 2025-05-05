@@ -2,14 +2,18 @@
   "manifest_version": 3,
   "name": "Browser Sprite",
   "version": "1.0.0",
-  "description": "A virtual pet slime that walks across your browser window and reacts to your cursor",
+  "description": "A virtual sprite that walks across your browser window, chases or runs away from your cursor, dances, and play dead",
   "icons": {
-    "128": "images/icon.png"
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "128": "images/icon.png"
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
     }
   },
   "content_scripts": [
@@ -27,6 +31,9 @@
   ],
   "permissions": [
     "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "web_accessible_resources": [
     {

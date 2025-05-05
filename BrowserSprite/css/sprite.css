@@ -5,11 +5,10 @@
   height: 64px;
   pointer-events: none;
   z-index: 9999;
-  transition: left 1s ease, top 1s ease; /* Smooth movement */
+  transition: left 1s ease, top 1s ease;
   background-repeat: no-repeat;
   background-size: contain;
   will-change: transform, left, top;
-  /* animation: bounce 0.7s infinite ease-in-out; */
 }
 
 .browser-sprite.draggable {
@@ -21,34 +20,18 @@
   cursor: grabbing;
 }
 
-
-.browser-sprite.pinkSlime {
-  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/pinkSlime.gif');
-}
-
-.browser-sprite.purpleSlime {
-  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/purpleSlime.gif');
-}
-
-.browser-sprite.greenSlime {
-  background-image: url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/greenSlime.gif');
-}
-
-.browser-sprite.walking-right {
-  animation: walk-right 0.6s steps(4) infinite;
-}
-
-.browser-sprite.walking-left {
-  animation: walk-left 0.6s steps(4) infinite;
-}
-
 .browser-sprite.sitting {
   animation: sit 2s infinite;
 }
 
 .browser-sprite.dance {
-  animation: dance 1s steps(6) infinite;
+  animation: dance 1.3s infinite;
 }
+
+.browser-sprite.dead {
+  animation: play-dead 0.5s forwards;
+}
+
 
 @keyframes bounce {
   0%, 20%, 100% {
@@ -59,20 +42,28 @@
   }
 }
 
-@keyframes sit {
+@keyframes dance {
   0% {
-    transform: translateY(0);
+    transform: translateX(0) rotate(0deg);
   }
-
-  50% {
-    transform: translateY(2px);
+  20% {
+    transform: translateX(-10px) rotate(-15deg);
   }
-
+  40% {
+    transform: translateX(10px) rotate(15deg);
+  }
+  60% {
+    transform: translateX(-10px) rotate(-15deg);
+  }
+  80% {
+    transform: translateX(10px) rotate(15deg);
+  }
   100% {
-    transform: translateY(0);
+    transform: translateX(0) rotate(0deg); 
   }
 }
 
+<<<<<<< Updated upstream
 @keyframes dance {
   0% {
     transform: rotate(0deg);
@@ -86,11 +77,15 @@
     transform: rotate(0deg);
   }
 
-  75% {
-    transform: rotate(30deg);
+@keyframes play-dead {
+=======
+/* @keyframes dance {
+>>>>>>> Stashed changes
+  0% {
+    transform: rotate(0);
   }
 
   100% {
     transform: rotate(0deg);
   }
-}
+} */
