@@ -125,6 +125,9 @@
   function updateSpriteAppearance() {
     if (!sprite) return; // Ensure the function exits if the sprite is null or undefined
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
   <<<<<<< Updated upstream
 
     // Extract the current sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
@@ -139,6 +142,24 @@
     // Update the background image to match the new sprite type
     sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${settings.petType}.gif')`;
 =======
+=======
+=======
+=======
+  
+    // Dynamically set the background image based on the pet type
+    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
+    sprite.style.backgroundImage = `url('${spriteUrl}')`;
+>>>>>>> Stashed changes
+  
+    // Dynamically set the background image based on the pet type
+    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
+    sprite.style.backgroundImage = `url('${spriteUrl}')`;
+>>>>>>> Stashed changes
+  
+    // Dynamically set the background image based on the pet type
+    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
+    sprite.style.backgroundImage = `url('${spriteUrl}')`;
+>>>>>>> Stashed changes
   
     // Dynamically set the background image based on the pet type
     const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
@@ -431,7 +452,16 @@
     movementTimer = setInterval(() => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
       if (
@@ -500,6 +530,9 @@
   function setAction(action, duration = 0) {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     if (!sprite) return;
   
     // Extract the base sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
@@ -530,6 +563,24 @@
     }
   
 >>>>>>> Stashed changes
+=======
+    if (!settings.enabled || !sprite) {
+      return; // Exit if the sprite is toggled off or not initialized
+    }
+  
+>>>>>>> Stashed changes
+=======
+    if (!settings.enabled || !sprite) {
+      return; // Exit if the sprite is toggled off or not initialized
+    }
+  
+>>>>>>> Stashed changes
+=======
+    if (!settings.enabled || !sprite) {
+      return; // Exit if the sprite is toggled off or not initialized
+    }
+  
+>>>>>>> Stashed changes
     // Dynamically set the background image for specific actions
     if (action === 'dead') {
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}Dead.gif`);
@@ -542,6 +593,15 @@
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
       sprite.style.backgroundImage = `url('${spriteUrl}')`;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -554,8 +614,17 @@
       setTimeout(() => {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
         setAction('bouncing');
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         if (action === 'dead' || action === 'dance') {
@@ -565,6 +634,15 @@
         }
         setAction('bouncing'); // Reset to bouncing after the action
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
