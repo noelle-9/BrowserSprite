@@ -74,16 +74,14 @@ h2 {
   margin: 0 10px;
 }
 
-<<<<<<< Updated upstream
 /* Checkboxes */
 .checkbox-container {
   margin-bottom: 8px;
-=======
+}
 .radio-container {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
->>>>>>> Stashed changes
 }
 
 .radio-container label {

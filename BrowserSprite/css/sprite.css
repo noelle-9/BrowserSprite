@@ -28,11 +28,6 @@
   animation: dance 1.3s infinite;
 }
 
-.browser-sprite.dead {
-  animation: play-dead 0.5s forwards;
-}
-
-
 @keyframes bounce {
   0%, 20%, 100% {
     transform: translateY(0); 
@@ -63,40 +58,7 @@
   }
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-@keyframes dance {
-=======
-/* @keyframes dance {
->>>>>>> Stashed changes
-=======
-/* @keyframes dance {
->>>>>>> Stashed changes
-=======
-/* @keyframes dance {
->>>>>>> Stashed changes
-=======
-/* @keyframes dance {
->>>>>>> Stashed changes
-  0% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(-30deg);
-  }
-
-  50% {
-    transform: rotate(0deg);
-  }
-
 @keyframes play-dead {
-=======
-/* @keyframes dance {
->>>>>>> Stashed changes
   0% {
     transform: rotate(0);
   }

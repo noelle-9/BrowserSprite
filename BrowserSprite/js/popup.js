@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+// Save settings to Chrome storage
 function saveSettings() {
   const petType = document.querySelector('input[name="petType"]:checked').value;
   const size = parseInt(document.getElementById('sizeSlider').value);
@@ -78,14 +79,6 @@ function saveSettings() {
     enabled: enabled,
   });
 }
-
-//   // Add event listeners to all inputs
-// document.addEventListener('DOMContentLoaded', function () {
-//   const inputs = document.querySelectorAll('input');
-//   inputs.forEach(input => {
-//     input.addEventListener('change', saveSettings);
-//   });
-// });
 
 document.getElementById('sizeSlider').addEventListener('input', function () {
   document.getElementById('sizeValue').textContent = `${this.value}%`;

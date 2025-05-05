@@ -124,55 +124,11 @@
   // Update sprite appearance based on settings
   function updateSpriteAppearance() {
     if (!sprite) return; // Ensure the function exits if the sprite is null or undefined
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  <<<<<<< Updated upstream
-
-    // Extract the current sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
-    const currentSpriteType = sprite.className.match(/pinkSlime|greenSlime|purpleSlime/);
-  
-    // Replace the current sprite type class with the new one
-    if (currentSpriteType) {
-      sprite.classList.remove(currentSpriteType[0]);
-    }
-    sprite.classList.add(settings.petType);
-  
-    // Update the background image to match the new sprite type
-    sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${settings.petType}.gif')`;
-=======
-=======
-=======
-=======
-  
-    // Dynamically set the background image based on the pet type
-    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
-    sprite.style.backgroundImage = `url('${spriteUrl}')`;
->>>>>>> Stashed changes
-  
-    // Dynamically set the background image based on the pet type
-    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
-    sprite.style.backgroundImage = `url('${spriteUrl}')`;
->>>>>>> Stashed changes
-  
-    // Dynamically set the background image based on the pet type
-    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
-    sprite.style.backgroundImage = `url('${spriteUrl}')`;
->>>>>>> Stashed changes
-  
-    // Dynamically set the background image based on the pet type
-    const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
-    sprite.style.backgroundImage = `url('${spriteUrl}')`;
->>>>>>> Stashed changes
-  
-=======
   
     // Dynamically set the background image based on the pet type
     const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
     sprite.style.backgroundImage = `url('${spriteUrl}')`;
   
->>>>>>> Stashed changes
     // Update sprite size
     sprite.style.transform = `scale(${settings.size / 100})`;
   }
@@ -216,17 +172,16 @@
     if (!settings.enabled || !sprite) {
       return; // Exit if the sprite is toggled off or not initialized
     }
-
+  
     lastCursorPosition = { x: e.clientX, y: e.clientY };
-
+  
     if (isDragging) {
       const left = e.clientX - dragOffset.x;
       const top = e.clientY - dragOffset.y;
-
+  
       sprite.style.left = left + 'px';
       sprite.style.top = top + 'px';
     } else {
-      // Always call reactToCursor to follow the cursor
       reactToCursor();
     }
   }
@@ -272,12 +227,6 @@
     }
   }
 
-  // Handle clicking on the sprite
-  // function handleSpriteClick(e) {
-  //   e.stopPropagation();
-  //   setAction('dead', 2000);
-  // }
-
   function handleSpriteClick(e) {
     e.stopPropagation();
   
@@ -296,26 +245,27 @@
     if (!settings.enabled || !sprite) {
       return; // Exit if the sprite is toggled off or not initialized
     }
+  
     const now = performance.now();
     if (now - lastReactTime < 100) { // Throttle to 100ms
       requestAnimationFrame(reactToCursor);
       return;
     }
     lastReactTime = now;
-
+  
     const rect = sprite.getBoundingClientRect();
     const spriteCenter = {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
     };
-
+  
     const distance = Math.sqrt(
       Math.pow(lastCursorPosition.x - spriteCenter.x, 2) +
       Math.pow(lastCursorPosition.y - spriteCenter.y, 2)
     );
-
+  
     const moveSpeed = 0.1 * (settings.speed / 100); // Adjust speed multiplier
-
+  
     if (settings.moveAwayFromCursor) {
       if (distance < 100 && !movementInProgress) { // Cursor is close and sprite is idle
         moveAwayFromCursor(spriteCenter, moveSpeed);
@@ -332,7 +282,7 @@
         startRandomMovement();
       }
     }
-
+  
     // Continuously call reactToCursor
     requestAnimationFrame(reactToCursor);
   }
@@ -444,26 +394,12 @@
     if (!settings.enabled || !sprite) {
       return; // Exit if the sprite is toggled off or not initialized
     }
-
+  
     if (movementTimer) {
       clearInterval(movementTimer);
     }
-
+  
     movementTimer = setInterval(() => {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
       if (
         isDragging || 
         !settings.randomMovement || 
@@ -471,29 +407,18 @@
         currentAction === 'dance'
       ) {
         return;
-=======
-      if (
-        isDragging || 
-        !settings.randomMovement || 
-        currentAction === 'dead' || 
-        currentAction === 'dance'
-      ) {
-        return;
->>>>>>> Stashed changes
       }
-
-      // Only move randomly if not already performing an action
+  
       if (!movementInProgress && (currentAction === 'idle' || currentAction === 'bouncing')) {
         const rect = sprite.getBoundingClientRect();
         const spriteCenter = {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2,
         };
-
-        // Random direction
+  
         const angle = Math.random() * Math.PI * 2;
         const distance = Math.random() * 150 + 50;
-
+  
         const newLeft = Math.max(
           0,
           Math.min(window.innerWidth - 64, spriteCenter.x + Math.cos(angle) * distance)
@@ -502,12 +427,11 @@
           0,
           Math.min(window.innerHeight - 64, spriteCenter.y + Math.sin(angle) * distance)
         );
-
-        movementInProgress = true; // Set the flag to prevent overlapping movements
+  
+        movementInProgress = true;
         moveSprite(newLeft, newTop, () => {
-          movementInProgress = false; // Reset the flag after movement completes
+          movementInProgress = false;
         });
-      } else {
       }
     }, 4000); // Move every 4 seconds
   }
@@ -528,59 +452,8 @@
 
   // Set sprite action/animation
   function setAction(action, duration = 0) {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     if (!sprite) return;
   
-    // Extract the base sprite type (e.g., pinkSlime, greenSlime, purpleSlime)
-    const spriteType = sprite.className.match(/pinkSlime|greenSlime|purpleSlime/);
-    if (!spriteType) return; // Exit if no sprite type is found
-  
-    // Remove all action classes while preserving the base sprite type
-    sprite.className = `browser-sprite draggable ${spriteType[0]}`;
-  
-    // Add the new action class
-    if (action !== 'idle') {
-      sprite.classList.add(action);
-  
-      // Handle the "dead" action specifically
-      if (action === 'dead') {
-        sprite.style.backgroundImage = `url('chrome-extension://bjcbjpednhcnihdkkhclihieoledinmj/images/${spriteType[0]}Dead.gif')`;
-      }
-    } else {
-      sprite.classList.add('bouncing'); // Default to bouncing when idle
-=======
-    if (!settings.enabled || !sprite) {
-      return; // Exit if the sprite is toggled off or not initialized
-    }
-  
-=======
-    if (!settings.enabled || !sprite) {
-      return; // Exit if the sprite is toggled off or not initialized
-    }
-  
->>>>>>> Stashed changes
-=======
-    if (!settings.enabled || !sprite) {
-      return; // Exit if the sprite is toggled off or not initialized
-    }
-  
->>>>>>> Stashed changes
-=======
-    if (!settings.enabled || !sprite) {
-      return; // Exit if the sprite is toggled off or not initialized
-    }
-  
->>>>>>> Stashed changes
-=======
-    if (!settings.enabled || !sprite) {
-      return; // Exit if the sprite is toggled off or not initialized
-    }
-  
->>>>>>> Stashed changes
     // Dynamically set the background image for specific actions
     if (action === 'dead') {
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}Dead.gif`);
@@ -592,19 +465,6 @@
     } else if (action === 'idle') {
       const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
       sprite.style.backgroundImage = `url('${spriteUrl}')`;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     }
   
     currentAction = action;
@@ -612,40 +472,12 @@
     // Reset to the regular .gif after the duration if specified
     if (duration > 0) {
       setTimeout(() => {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        setAction('bouncing');
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         if (action === 'dead' || action === 'dance') {
           const spriteUrl = chrome.runtime.getURL(`images/${settings.petType}.gif`);
           sprite.style.backgroundImage = `url('${spriteUrl}')`;
           sprite.classList.remove('dance'); // Remove the "dance" class after the duration
         }
         setAction('bouncing'); // Reset to bouncing after the action
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         startIdleTimer();
       }, duration);
     }
